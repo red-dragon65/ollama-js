@@ -1,4 +1,5 @@
-import ollama from 'ollama';
+//import ollama from 'ollama';
+import ollama from '/workspaces/ollama-js/dist/index.cjs';
 
 // Simulates an API call to get flight times
 // In a real application, this would fetch data from a live database or API
@@ -22,7 +23,7 @@ function getFlightTimes(args: { [key: string]: any }) {
 
 async function run(model: string) {
     // Initialize conversation with a user query
-    let messages = [{ role: 'user', content: 'What is the flight time from New York (LGA) to Los Angeles (LAX)?' }];
+    const messages = [{ role: 'user', content: 'What is the flight time from New York (LGA) to Los Angeles (LAX)?' }];
 
     // First API call: Send the query and function description to the model
     const response = await ollama.chat({

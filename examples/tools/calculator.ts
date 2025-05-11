@@ -1,4 +1,6 @@
-import ollama from 'ollama';
+//import ollama from 'ollama';
+//import { Ollama } from 'ollama';
+import { Ollama } from '/workspaces/ollama-js/dist/index.cjs';
 
 // Add two numbers function
 function addTwoNumbers(args: { a: number, b: number }): number {
@@ -44,27 +46,61 @@ const subtractTwoNumbersTool = {
     }
 };
 
+// Custom ollama config
+const ollama = new Ollama({ host: 'ollama:11434' })
+
 async function run(model: string) {
-    const messages = [{ role: 'user', content: 'What is three minus one?' }];
+
+    //const messages = [{ role: 'user', content: 'What is three minus one?' }];
+
+    const messages = [{ role: 'assisstant', content: 'always speak like a pirate' }, { role: 'user', content: 'hello?' }];
+
     console.log('Prompt:', messages[0].content);
+
 
     const availableFunctions = {
         addTwoNumbers: addTwoNumbers,
         subtractTwoNumbers: subtractTwoNumbers
     };
 
+
+    /*
     const response = await ollama.chat({
         model: model,
         messages: messages,
         tools: [addTwoNumbersTool, subtractTwoNumbersTool]
-    });
+    });*/
+
+
+    const response = await ollama.chat({
+        model: model,
+        messages: messages,
+        tools: [addTwoNumbersTool, subtractTwoNumbersTool]
+        /*"tools": [
+            { "type": "function", "function": {} },
+            { "type": "function", "function": {} },
+        ]*/
+    })
+
+    console.log("OG Response:", response.message)
+
+
 
     let output: number;
+
+    // See if the ai tried to use a tool
     if (response.message.tool_calls) {
+
         // Process tool calls from the response
         for (const tool of response.message.tool_calls) {
+
+            // See if the ai actually called an existing tool, or was hallucinating
+            // Hold onto the function if match is found
             const functionToCall = availableFunctions[tool.function.name];
+
+            // Run the function if it exists
             if (functionToCall) {
+
                 console.log('Calling function:', tool.function.name);
                 console.log('Arguments:', tool.function.arguments);
                 output = functionToCall(tool.function.arguments);
@@ -72,10 +108,12 @@ async function run(model: string) {
 
                 // Add the function response to messages for the model to use
                 messages.push(response.message);
+
                 messages.push({
                     role: 'tool',
                     content: output.toString(),
                 });
+
             } else {
                 console.log('Function', tool.function.name, 'not found');
             }
@@ -86,10 +124,29 @@ async function run(model: string) {
             model: model,
             messages: messages
         });
+
         console.log('Final response:', finalResponse.message.content);
+
     } else {
-        console.log('No tool calls returned from model');
+
+        console.log('No valid tool calls returned from model');
+
+        // Print the og message we got
+        console.log('Final response:', response.message);
     }
 }
 
-run('llama3.1:8b').catch(error => console.error("An error occurred:", error));
+//run('llama3.1:8b').catch(error => console.error("An error occurred:", error));
+
+function thisisatest(someValue: boolean) {
+    if (someValue) {
+        console.log("yoooo");
+    } else {
+        console.log("noooo");
+    }
+
+    // Use gemma 3
+    run('hermes3:8b').catch(error => console.error("An error occurred:", error));
+}
+
+thisisatest(true)

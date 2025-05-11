@@ -1,0 +1,16 @@
+
+# Run this in the host cli
+docker network create ollama-js-net
+
+# Add this to .devcontainer config in project to connect to the ollama container when the dev container launches
+#"runArgs": ["--network=ollama-js-net"]
+
+# Run this in the host cli to connect the existing, running, OLLAMA_TS_DEV container to the network
+docker network connect ollama-js-net <DEV_CONTAINER_NAME>
+
+
+# Run this in the host cli to connect the existing, running, OLLAMA container to the network
+docker network connect ollama-js-net ollama
+
+# Run this to see if the dev container can talk to the ollama container
+ping ollama
