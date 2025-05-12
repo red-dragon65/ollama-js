@@ -1,86 +1,34 @@
 //import ollama from 'ollama';
 //import { Ollama } from 'ollama';
+//import { Ollama } from '../../dist/index.cjs';
 import { Ollama } from '/workspaces/ollama-js/dist/index.cjs';
 
-// Add two numbers function
-function addTwoNumbers(args: { a: number, b: number }): number {
-    return args.a + args.b;
-}
+import * as addDefinition from './toolFunctionAdd.js'
+import * as subtractDefinition from './toolFunctionSubtract.js'
 
-// Subtract two numbers function 
-function subtractTwoNumbers(args: { a: number, b: number }): number {
-    return args.a - args.b;
-}
 
-// Tool definition for add function
-const addTwoNumbersTool = {
-    type: 'function',
-    function: {
-        name: 'addTwoNumbers',
-        description: 'Add two numbers together',
-        parameters: {
-            type: 'object',
-            required: ['a', 'b'],
-            properties: {
-                a: { type: 'number', description: 'The first number' },
-                b: { type: 'number', description: 'The second number' }
-            }
-        }
-    }
-};
-
-// Tool definition for subtract function
-const subtractTwoNumbersTool = {
-    type: 'function',
-    function: {
-        name: 'subtractTwoNumbers',
-        description: 'Subtract two numbers',
-        parameters: {
-            type: 'object',
-            required: ['a', 'b'],
-            properties: {
-                a: { type: 'number', description: 'The first number' },
-                b: { type: 'number', description: 'The second number' }
-            }
-        }
-    }
-};
 
 // Custom ollama config
 const ollama = new Ollama({ host: 'ollama:11434' })
 
 async function run(model: string) {
 
-    //const messages = [{ role: 'user', content: 'What is three minus one?' }];
-
-    const messages = [{ role: 'assisstant', content: 'always speak like a pirate' }, { role: 'user', content: 'hello?' }];
+    const messages = [{ role: 'user', content: 'What is three minus one?' }];
 
     console.log('Prompt:', messages[0].content);
 
 
     const availableFunctions = {
-        addTwoNumbers: addTwoNumbers,
-        subtractTwoNumbers: subtractTwoNumbers
+        addTwoNumbers: addDefinition.addFunction,
+        subtractTwoNumbers: subtractDefinition.subtractFunction
     };
 
-
-    /*
     const response = await ollama.chat({
         model: model,
         messages: messages,
-        tools: [addTwoNumbersTool, subtractTwoNumbersTool]
-    });*/
+        tools: [addDefinition.addToolSchema, subtractDefinition.subtractToolSchema]
+    });
 
-
-    const response = await ollama.chat({
-        model: model,
-        messages: messages,
-        tools: [addTwoNumbersTool, subtractTwoNumbersTool]
-        /*"tools": [
-            { "type": "function", "function": {} },
-            { "type": "function", "function": {} },
-        ]*/
-    })
 
     console.log("OG Response:", response.message)
 
@@ -136,17 +84,7 @@ async function run(model: string) {
     }
 }
 
-//run('llama3.1:8b').catch(error => console.error("An error occurred:", error));
+export default function execute() {
 
-function thisisatest(someValue: boolean) {
-    if (someValue) {
-        console.log("yoooo");
-    } else {
-        console.log("noooo");
-    }
-
-    // Use gemma 3
     run('hermes3:8b').catch(error => console.error("An error occurred:", error));
 }
-
-thisisatest(true)

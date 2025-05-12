@@ -1,0 +1,102 @@
+
+
+
+// Use this to test models using postman
+// Replace "model" with the model of your choosing
+// Include tools, or no tools
+// Specify the role as either "system" or "assisstant"
+
+
+Models
+- qwen
+- hermes
+- llama
+
+
+
+
+// Without tools
+{
+  "model": "qwen3:4b",
+  "messages": [
+    {
+      "role": "system",
+      "content": "always speak like a pirate"
+    },
+    {
+      "role": "user",
+      "content": "hello?"
+    }
+  ],
+  "stream": false
+}
+
+
+
+
+
+// With tools
+{
+  "model": "qwen3:4b",
+  "messages": [
+    {
+      "role": "system",
+      "content": "always speak like a pirate"
+    },
+    {
+      "role": "user",
+      "content": "hello?"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "addTwoNumbers",
+        "description": "Add two numbers together",
+        "parameters": {
+          "type": "object",
+          "required": [
+            "a",
+            "b"
+          ],
+          "properties": {
+            "a": {
+              "type": "number",
+              "description": "The first number"
+            },
+            "b": {
+              "type": "number",
+              "description": "The second number"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "subtractTwoNumbers",
+        "description": "Subtract two numbers",
+        "parameters": {
+          "type": "object",
+          "required": [
+            "a",
+            "b"
+          ],
+          "properties": {
+            "a": {
+              "type": "number",
+              "description": "The first number"
+            },
+            "b": {
+              "type": "number",
+              "description": "The second number"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "stream": false
+}
